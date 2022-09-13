@@ -1,7 +1,10 @@
+import { useRouter } from "next/router";
 //our-domain.com/new-meetup
 import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 
 function NewMeetupPage() {
+  const router = useRouter();
+
   async function addMeetupHandler(enteredMeetupData) {
     const response = await fetch("/api/new-meetup", {
       method: "POST",
@@ -14,6 +17,8 @@ function NewMeetupPage() {
     const data = await response.json();
 
     console.log(data);
+
+    router.push("/");
   }
 
   return <NewMeetupForm onAddMeetup={addMeetupHandler} />;
