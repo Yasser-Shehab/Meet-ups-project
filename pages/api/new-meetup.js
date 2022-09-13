@@ -9,7 +9,7 @@ async function handler(req, res) {
       const data = req.body;
 
       const client = await MongoClient.connect(
-        "mongodb+srv://AquaApple:AquaApple@cluster0.u7jyf.mongodb.net/meetups?retryWrites=true&w=majority"
+        "mongodb+srv://m001-student:m001-mongodb-basics@cluster0.u7jyf.mongodb.net/meetups?retryWrites=true&w=majority"
       );
       const db = client.db();
 
@@ -24,7 +24,7 @@ async function handler(req, res) {
       res.status(200).json({ messaage: "Meetup inserted" });
     }
   } catch (error) {
-    alert(error.message);
+    res.status(500).json({ message: "An Error Occurred" });
   }
 }
 
