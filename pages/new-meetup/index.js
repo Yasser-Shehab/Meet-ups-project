@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import NewMeetupForm from "../../components/meetups/NewMeetupForm";
 
 function NewMeetupPage() {
-  console.log(process.env.NEXT_PUBLIC_DB_CONNECTION);
   const router = useRouter();
 
   async function addMeetupHandler(enteredMeetupData) {

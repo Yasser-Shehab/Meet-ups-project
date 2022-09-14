@@ -1,48 +1,59 @@
 import MeetupDetail from "../../components/meetups/MeetupDetail";
+import { MongoClient, ObjectId } from "mongodb";
 
-function MeetupDetails() {
+function MeetupDetails(props) {
   return (
     <>
       <MeetupDetail
-        image="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg"
-        title="First Meetup"
-        address="Some Street 5, Some City"
-        description="The meetup description"
+        image={props.meetupData.image}
+        title={props.meetupData.title}
+        address={props.meetupData.address}
+        description={props.meetupData.description}
       />
     </>
   );
 }
 
 export async function getStaticPaths() {
+  const client = await MongoClient.connect(process.env.NEXT_PUBLIC_DB_CONNECTION);
+
+  const db = client.db();
+
+  const meetupsCollections = db.collection("meetups");
+
+  const meetups = await meetupsCollections.find({}, { _id: 1 }).toArray();
+
+  client.close();
   return {
     fallback: false,
-    paths: [
-      {
-        params: {
-          meetupId: "m1",
-        },
-        params: {
-          meetupId: "m2",
-        },
-      },
-    ],
+    paths: meetups.map((meetup) => ({ params: { meetupId: meetup._id.toString() } })),
   };
 }
 
 export async function getStaticProps({ req, res, params }) {
   // fetch data from an api
   const meetupId = params.meetupId;
-
   console.log(meetupId);
+
+  const client = await MongoClient.connect(process.env.NEXT_PUBLIC_DB_CONNECTION);
+
+  const db = client.db();
+
+  const meetupsCollections = db.collection("meetups");
+
+  const meetup = await meetupsCollections.findOne({ _id: new ObjectId(meetupId) });
+
+  console.log(meetup);
+
+  client.close();
   return {
     props: {
       meetupData: {
         id: meetupId,
-        image:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg",
-        title: "First Meetup",
-        address: "Some Street 5, Some City",
-        description: "The meetup description",
+        title: meetup.title,
+        image: meetup.image,
+        address: meetup.address,
+        description: meetup.description,
       },
     },
   };

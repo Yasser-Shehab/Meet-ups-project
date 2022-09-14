@@ -51,14 +51,13 @@ export async function getStaticProps() {
   const meetupsCollections = db.collection("meetups");
 
   const meetups = await meetupsCollections.find().toArray();
-  console.log(meetups);
 
   client.close();
 
   const meetupData = meetups.map((meetup) => ({
-    title: meetup.data.title,
-    address: meetup.data.address,
-    image: meetup.data.image,
+    title: meetup.title,
+    address: meetup.address,
+    image: meetup.image,
     id: meetup._id.toString(),
   }));
 
